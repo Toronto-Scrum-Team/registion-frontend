@@ -8,6 +8,7 @@ import { AuthButton } from "../elements/AuthButton";
 import { AuthLink } from "../elements/AuthLink";
 import { AuthErrorMessage } from "../elements/AuthErrorMessage";
 import { AuthFormContainer } from "../elements/AuthFormContainer";
+import { validateEmail } from "@/lib/utils/validation";
 
 export const LoginForm: React.FC = () => {
   const router = useRouter();
@@ -43,11 +44,9 @@ export const LoginForm: React.FC = () => {
     const newErrors = { email: "", password: "" };
 
     // Email validation
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.message || "Invalid email";
       isValid = false;
     }
 

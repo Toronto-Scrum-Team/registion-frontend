@@ -8,20 +8,26 @@ import { AuthButton } from "../elements/AuthButton";
 import { AuthLink } from "../elements/AuthLink";
 import { AuthErrorMessage } from "../elements/AuthErrorMessage";
 import { AuthFormContainer } from "../elements/AuthFormContainer";
+import { validateEmail, validatePassword, validateName, validatePasswordConfirmation } from "@/lib/utils/validation";
 
 export const SignUpForm: React.FC = () => {
   const router = useRouter();
   const { register, isLoading, error, clearError } = useAuth();
 
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const [formErrors, setFormErrors] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,23 +47,49 @@ export const SignUpForm: React.FC = () => {
 
   const validateForm = (): boolean => {
     let isValid = true;
-    const newErrors = { email: "", password: "" };
+    const newErrors = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: ""
+    };
+
+    // First name validation
+    const firstNameValidation = validateName(formData.firstName, "First name");
+    if (!firstNameValidation.isValid) {
+      newErrors.firstName = firstNameValidation.message || "First name is required";
+      isValid = false;
+    }
+
+    // Last name validation
+    const lastNameValidation = validateName(formData.lastName, "Last name");
+    if (!lastNameValidation.isValid) {
+      newErrors.lastName = lastNameValidation.message || "Last name is required";
+      isValid = false;
+    }
 
     // Email validation
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.message || "Invalid email";
       isValid = false;
     }
 
     // Password validation
-    if (!formData.password) {
-      newErrors.password = "Password is required";
+    const passwordValidation = validatePassword(formData.password);
+    if (!passwordValidation.isValid) {
+      newErrors.password = passwordValidation.message || "Invalid password";
       isValid = false;
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    // Confirm password validation
+    const confirmPasswordValidation = validatePasswordConfirmation(
+      formData.password,
+      formData.confirmPassword
+    );
+    if (!confirmPasswordValidation.isValid) {
+      newErrors.confirmPassword = confirmPasswordValidation.message || "Passwords do not match";
       isValid = false;
     }
 
@@ -73,10 +105,7 @@ export const SignUpForm: React.FC = () => {
     }
 
     try {
-      await register({
-        ...formData,
-        confirmPassword: formData.password // For API compatibility
-      });
+      await register(formData);
       router.push("/dashboard");
     } catch {
       // Error is handled by the auth context
@@ -100,6 +129,35 @@ export const SignUpForm: React.FC = () => {
         }
       >
         <form onSubmit={handleSubmit} className="w-full space-y-4">
+          {/* Name Fields - Side by Side */}
+          <div className="flex space-x-4">
+            {/* First Name Input */}
+            <div className="flex-1">
+              <AuthInput
+                label="First Name"
+                type="text"
+                name="firstName"
+                placeholder="John"
+                value={formData.firstName}
+                onChange={handleChange}
+                error={formErrors.firstName}
+              />
+            </div>
+
+            {/* Last Name Input */}
+            <div className="flex-1">
+              <AuthInput
+                label="Last Name"
+                type="text"
+                name="lastName"
+                placeholder="Doe"
+                value={formData.lastName}
+                onChange={handleChange}
+                error={formErrors.lastName}
+              />
+            </div>
+          </div>
+
           {/* Email Input */}
           <AuthInput
             label="E-mail"
@@ -112,14 +170,30 @@ export const SignUpForm: React.FC = () => {
           />
 
           {/* Password Input */}
+          <div className="space-y-1">
+            <AuthInput
+              label="Password"
+              type="password"
+              name="password"
+              placeholder="****************"
+              value={formData.password}
+              onChange={handleChange}
+              error={formErrors.password}
+            />
+            <p className="text-gray-300 text-xs mt-1">
+              Password must be at least 8 characters with one uppercase letter, one number, and one special character.
+            </p>
+          </div>
+
+          {/* Confirm Password Input */}
           <AuthInput
-            label="Password"
+            label="Confirm Password"
             type="password"
-            name="password"
+            name="confirmPassword"
             placeholder="****************"
-            value={formData.password}
+            value={formData.confirmPassword}
             onChange={handleChange}
-            error={formErrors.password}
+            error={formErrors.confirmPassword}
           />
 
           {/* Error Message */}

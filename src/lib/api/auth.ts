@@ -1,4 +1,5 @@
 import { User, LoginCredentials, RegisterCredentials } from "@/types/auth";
+import { validatePassword } from "@/lib/utils/validation";
 
 /**
  * Authentication API service
@@ -32,20 +33,24 @@ export const authService = {
     // Dummy implementation for development
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // For demo purposes, accept any email with a valid format and password length > 5
-        if (
-          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email) &&
-          credentials.password.length > 5
-        ) {
-          resolve({
-            id: "1",
-            email: credentials.email,
-            name: credentials.email.split("@")[0],
-            createdAt: new Date().toISOString(),
-          });
-        } else {
-          reject(new Error("Invalid email or password"));
+        // For demo purposes, accept any email with a valid format
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email)) {
+          reject(new Error("Invalid email format"));
+          return;
         }
+
+        // We don't validate password strength on login, just check if it exists
+        if (!credentials.password) {
+          reject(new Error("Password is required"));
+          return;
+        }
+
+        resolve({
+          id: "1",
+          email: credentials.email,
+          name: credentials.email.split("@")[0],
+          createdAt: new Date().toISOString(),
+        });
       }, 1000);
     });
   },
@@ -76,26 +81,32 @@ export const authService = {
     // Dummy implementation for development
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // Validate email format and password match
+        // Validate email format
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email)) {
           reject(new Error("Invalid email format"));
           return;
         }
 
+        // Validate password match
         if (credentials.password !== credentials.confirmPassword) {
           reject(new Error("Passwords do not match"));
           return;
         }
 
-        if (credentials.password.length < 6) {
-          reject(new Error("Password must be at least 6 characters"));
+        // Validate password strength
+        const passwordValidation = validatePassword(credentials.password);
+        if (!passwordValidation.isValid) {
+          reject(new Error(passwordValidation.message));
           return;
         }
+
+        // Combine first and last name for the name field
+        const fullName = `${credentials.firstName} ${credentials.lastName}`.trim();
 
         resolve({
           id: "1",
           email: credentials.email,
-          name: credentials.name || credentials.email.split("@")[0],
+          name: fullName || credentials.email.split("@")[0],
           createdAt: new Date().toISOString(),
         });
       }, 1000);
