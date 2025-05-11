@@ -105,7 +105,10 @@ export const SignUpForm: React.FC = () => {
     }
 
     try {
-      await register(formData);
+      await register({
+        ...formData,
+        confirmPassword: formData.password // For API compatibility
+      });
       router.push("/dashboard");
     } catch {
       // Error is handled by the auth context
