@@ -5,8 +5,7 @@ A modern, responsive user registration and authentication system built with Next
 ## 🚀 Features
 
 - User registration with email verification
-- Login/logout functionality
-- Password reset flow
+- Login/logout functionality- Password reset flow
 - Profile management
 - Responsive design for all devices
 - Form validation
@@ -25,22 +24,55 @@ A modern, responsive user registration and authentication system built with Next
 
 ## 📋 Prerequisites
 
-- Node.js 18.x or higher
+- Node.js 18.x or higher:
+  - Download and install [Node.js](https://nodejs.org/en#download)
+  - Verify installation: `node -v`
+  - Verify npm installation: `npm -v`
+
 - npm or yarn package manager
+
+## 📦 IEDs
+
+- Using intellij for example:
+
+  - **IntelliJ requires a plugin to run Node.js in and the Ultimate version; the Community Edition does not support these features.**
+
+  - Download and install [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+  - Download and install [Node.js](https://nodejs.org/en#download)
+  - Make sure the JavaScript and TypeScript and Node.js required plugins are enabled on the Settings | Plugins page, tab     Installed.
+  - Check the intellij official documentation for more information: [IntelliJ IDEA Node.js](https://www.jetbrains.com/help/idea/developing-node-js-applications.html)
+
+- Using VSCode:
+  - Download and install [VSCode](https://code.visualstudio.com/)
+  - Install the following extensions:
+    - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+    - [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+    - If you have already downloaded node.js globally on your computer, please proceed to the next step.
 
 ## 🚀 Getting Started
 
-1. **Clone the repository**
+1. **Fork the repository**
+Fork this repository to your GitHub account.
+
+2. **Clone the forked repository**
 
 ```bash
-git clone https://github.com/WangyangYe0512/registion-frontend.git
+git clone https://github.com/your-github-username/registion-frontend.git
 # or
-git clone git@github.com:WangyangYe0512/registion-frontend.git
+git clone git@github.com:your-github-username/registion-frontend.git
 
 cd registion-frontend
 ```
 
-2. **Install dependencies**
+3. **Switch to the development branch**
+
+```bash
+git checkout -b the-dev-branch-name
+# or
+git checkout the-dev-branch-name
+```
+
+4. **Install dependencies**
 
 ```bash
 npm install
@@ -48,7 +80,7 @@ npm install
 yarn install
 ```
 
-3. **Run the development server**
+4. **Run the development server**
 
 ```bash
 npm run dev
@@ -57,6 +89,13 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+
+5. **Contribution**
+
+- Create a new branch for your feature or bug fix: `git checkout -b feature-name`
+- Make your changes and commit them: `git commit -m "Add feature"`
+- Push to the branch: `git push origin feature-name`
+- Create a pull request from your branch to the **corresponding development branch** of the [original repository](https://github.com/WangyangYe0512/registion-frontend).
 
 ## 🏗️ Project Structure
 
@@ -105,7 +144,3 @@ npm run start
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
