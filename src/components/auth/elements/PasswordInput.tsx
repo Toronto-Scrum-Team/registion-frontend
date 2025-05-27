@@ -3,41 +3,53 @@
 import React, { useState, forwardRef } from "react";
 
 interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+  label: string;
   error?: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ label, error, className, ...props }, ref) => {
+  ({ label, error, className, name, value, onChange, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
+    const inputId = `${name}-input`;
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
     };
 
     return (
-      <div className="space-y-1">
-        {label && (
-          <label className="block text-white text-[18px] font-[400] font-mina">
-            {label}
-          </label>
-        )}
+      <div className="space-y-2 w-full">
+        <label
+          htmlFor={inputId}
+          className="block text-black text-[16px] font-[700]"
+          style={{ fontFamily: 'var(--font-open-sans)' }}
+        >
+          {label}
+        </label>
         <div className="relative">
           <input
+            id={inputId}
             type={showPassword ? "text" : "password"}
+            name={name}
+            value={value}
+            onChange={onChange}
             className={`auth-input pr-10 ${className || ""}`}
             ref={ref}
+            required
             {...props}
           />
           <button
             type="button"
             className="absolute inset-y-0 right-0 pr-3 flex items-center"
             onClick={togglePasswordVisibility}
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-white"
+                className="h-5 w-5 text-gray-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -52,7 +64,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-white"
+                className="h-5 w-5 text-gray-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -73,7 +85,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             )}
           </button>
         </div>
-        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm mt-1">{error}</p>
+        )}
       </div>
     );
   }

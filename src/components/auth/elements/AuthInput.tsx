@@ -24,8 +24,8 @@ export const AuthInput: React.FC<AuthInputProps> = ({
   required = true,
 }) => {
   return (
-    <div className="space-y-1 w-full">
-      <label className="block text-white text-[18px] font-[400] font-mina">
+    <div className="space-y-2 w-full">
+      <label className="block text-black text-[16px] font-[700]" style={{ fontFamily: 'var(--font-open-sans)' }}>
         {label}
       </label>
       <input
@@ -38,7 +38,7 @@ export const AuthInput: React.FC<AuthInputProps> = ({
         required={required}
       />
       {error && (
-        <p className="text-red-500 text-xs mt-1">{error}</p>
+        <p className="text-red-500 text-sm mt-1">{error}</p>
       )}
     </div>
   );

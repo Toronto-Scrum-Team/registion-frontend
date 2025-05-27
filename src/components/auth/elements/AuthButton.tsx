@@ -8,6 +8,8 @@ interface AuthButtonProps {
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
+  variant?: "primary" | "secondary";
+  className?: string;
 }
 
 export const AuthButton: React.FC<AuthButtonProps> = ({
@@ -16,17 +18,20 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
   onClick,
   type = "submit",
   disabled = false,
+  variant = "primary",
+  className = "",
 }) => {
+  const baseClasses = variant === "primary" ? "auth-button-primary" : "auth-button-secondary";
+
   return (
-    <div className="flex justify-center mt-4">
-      <button
-        type={type}
-        onClick={onClick}
-        disabled={disabled || isLoading}
-        className="auth-button text-[20px] font-bold font-mina px-5 py-1.5 w-[160px]"
-      >
-        {isLoading ? "LOADING..." : label}
-      </button>
-    </div>
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled || isLoading}
+      className={`${baseClasses} text-[16px] ${className}`}
+      style={{ fontFamily: 'var(--font-open-sans)' }}
+    >
+      {isLoading ? "Loading..." : label}
+    </button>
   );
 };

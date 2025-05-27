@@ -7,7 +7,8 @@ import { AuthInput } from "../elements/AuthInput";
 import { AuthButton } from "../elements/AuthButton";
 import { AuthLink } from "../elements/AuthLink";
 import { AuthErrorMessage } from "../elements/AuthErrorMessage";
-import { AuthFormContainer } from "../elements/AuthFormContainer";
+import { PasswordInput } from "../elements/PasswordInput";
+// import { AuthFormContainer } from "../elements/AuthFormContainer"; // Removed due to layout redesign - replaced with split-screen layout
 import { validateEmail } from "@/lib/utils/validation";
 
 export const LoginForm: React.FC = () => {
@@ -76,61 +77,73 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full max-w-[1005px] h-[641px]">
-      {/* Background Image */}
-      <div className="absolute left-0 top-0 w-[673px] h-[471px] rounded-[100px] shadow-[8px_10px_10px_3px_rgba(0,0,0,0.25)] overflow-hidden">
-        <div className="w-full h-full bg-[url('/nightclub-bg.png')] bg-cover bg-center bg-no-repeat"></div>
+    <div className="flex w-full max-w-6xl mx-auto bg-white rounded-lg overflow-hidden min-h-[600px]">
+      {/* Left side - Gray placeholder for illustration */}
+      <div className="flex-1 placeholder-area flex items-center justify-center">
+        <div className="text-gray-500 text-center">
+          <div className="text-4xl mb-2">🎨</div>
+          <p className="text-sm">Illustration placeholder</p>
+        </div>
       </div>
 
-      {/* Form Container */}
-      <AuthFormContainer
-        title={
-          <>
-            <h1 className="auth-title text-[42px]">Welcome</h1>
-            <div className="h-[42px]"></div>
-          </>
-        }
-      >
-        <form onSubmit={handleSubmit} className="w-full space-y-4">
-          {/* Email Input */}
-          <AuthInput
-            label="E-mail"
-            type="email"
-            name="email"
-            placeholder="example@service.com"
-            value={formData.email}
-            onChange={handleChange}
-            error={formErrors.email}
-          />
+      {/* Right side - Form */}
+      <div className="flex-1 p-12 flex flex-col justify-center">
+        <div className="max-w-md mx-auto w-full">
+          {/* Title */}
+          <h1 className="auth-title text-[32px] mb-2">Log in to your account</h1>
 
-          {/* Password Input */}
-          <AuthInput
-            label="Password"
-            type="password"
-            name="password"
-            placeholder="****************"
-            value={formData.password}
-            onChange={handleChange}
-            error={formErrors.password}
-          />
-
-          {/* Error Message */}
-          <AuthErrorMessage message={error} />
-
-          {/* LOG In Button */}
-          <AuthButton
-            label="LOG IN"
-            isLoading={isLoading}
-            disabled={isLoading}
-          />
-
-          {/* Register Link */}
+          {/* Sign up link */}
           <AuthLink
-            text="New to here? Please Register"
+            regularText="Don't have an account?"
+            linkText="Sign up"
             href="/register"
           />
-        </form>
-      </AuthFormContainer>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            {/* Email Input */}
+            <AuthInput
+              label="Email Address"
+              type="email"
+              name="email"
+              placeholder=""
+              value={formData.email}
+              onChange={handleChange}
+              error={formErrors.email}
+            />
+
+            {/* Password Input */}
+            <PasswordInput
+              label="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={formErrors.password}
+              placeholder=""
+            />
+
+            {/* Error Message */}
+            <AuthErrorMessage message={error} />
+
+            {/* Buttons */}
+            <div className="flex space-x-4 pt-4">
+              <AuthButton
+                label="Cancel"
+                type="button"
+                variant="secondary"
+                className="flex-1"
+              />
+              <AuthButton
+                label="Login"
+                type="submit"
+                variant="primary"
+                isLoading={isLoading}
+                disabled={isLoading}
+                className="flex-1"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

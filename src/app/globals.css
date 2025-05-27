@@ -1,14 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #171717;
-  --foreground: #FFFFFF;
-  --form-bg: #071922;
-  --input-bg: rgba(217, 217, 217, 0.57);
-  --input-placeholder: rgba(217, 217, 217, 0.56);
-  --button-bg: #DBD2CD;
-  --button-text: #0D3245;
-  --link-color: rgba(255, 255, 255, 0.54);
+  --background: #FFFFFF;
+  --foreground: #000000;
+  --form-bg: #FFFFFF;
+  --input-bg: #FFFFFF;
+  --input-border: #E5E5E5;
+  --input-placeholder: #9CA3AF;
+  --button-primary-bg: #3FB3ED;
+  --button-primary-text: #FFFFFF;
+  --button-secondary-bg: #F3F4F6;
+  --button-secondary-text: #6B7280;
+  --link-color: #60A5FA;
+  --placeholder-bg: #D1D5DB;
 }
 
 @theme inline {
@@ -17,69 +21,114 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-mina: var(--font-mina);
+  --font-ibm-plex-serif: var(--font-ibm-plex-serif);
+  --font-open-sans: var(--font-open-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mina), Arial, sans-serif;
+  font-family: var(--font-open-sans), Arial, sans-serif;
+  font-weight: 700; /* Open Sans Bold for general text */
 }
 
 .auth-form-container {
   background: var(--form-bg);
-  box-shadow: 8px 10px 10px rgba(0, 0, 0, 0.25);
-  border-radius: 100px;
+  border-radius: 0;
   padding: 2rem 1.5rem;
+  box-shadow: none;
 }
 
 .auth-input {
   background: var(--input-bg);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.52);
-  border-radius: 100px;
-  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
   color: var(--foreground);
   width: 100%;
-  height: 40px;
+  height: 48px;
   font-size: 16px;
-  font-family: var(--font-mina);
+  font-family: var(--font-open-sans);
+  font-weight: 700; /* Open Sans Bold */
   box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--button-primary-bg);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
 }
 
 .auth-input::placeholder {
   color: var(--input-placeholder);
 }
 
-.auth-button {
-  background: var(--button-bg);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.52);
-  border-radius: 100px;
-  color: var(--button-text);
-  font-weight: 700;
-  padding: 0.5rem 1.5rem;
+.auth-button-primary {
+  background: var(--button-primary-bg);
+  border-radius: 8px;
+  color: var(--button-primary-text);
+  font-family: var(--font-open-sans);
+  font-weight: 700; /* Open Sans Bold */
+  padding: 0.75rem 1.5rem;
   transition: all 0.2s ease;
   text-align: center;
   white-space: nowrap;
+  border: none;
+  cursor: pointer;
 }
 
-.auth-button:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
+.auth-button-primary:hover {
+  background: #3B82F6;
+  transform: translateY(-1px);
+}
+
+.auth-button-secondary {
+  background: var(--button-secondary-bg);
+  border-radius: 8px;
+  color: var(--button-secondary-text);
+  font-family: var(--font-open-sans);
+  font-weight: 700; /* Open Sans Bold */
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid var(--input-border);
+  cursor: pointer;
+}
+
+.auth-button-secondary:hover {
+  background: #E5E7EB;
+  transform: translateY(-1px);
 }
 
 .auth-link {
   color: var(--link-color);
-  text-decoration: underline;
-  display: inline-block;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-decoration: none;
+  display: inline;
+  font-family: var(--font-open-sans);
+  font-weight: 700; /* Open Sans Bold */
+  vertical-align: baseline;
+}
+
+.auth-link:hover {
+  text-decoration: none;
 }
 
 .auth-title {
-  font-family: var(--font-mina);
-  font-weight: 400;
-  text-align: center;
+  font-family: var(--font-ibm-plex-serif);
+  font-weight: 400; /* IBM Plex Serif Regular */
+  text-align: left;
   color: var(--foreground);
-  text-shadow: 12px 4px 11px rgba(0, 0, 0, 0.25);
+  text-shadow: none;
+}
+
+.password-requirements {
+  font-family: var(--font-open-sans);
+  font-weight: 600; /* Open Sans Semi Bold */
+}
+
+.placeholder-area {
+  background: var(--placeholder-bg);
+  border-radius: 8px;
 }

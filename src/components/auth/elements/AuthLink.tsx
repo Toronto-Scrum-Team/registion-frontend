@@ -4,15 +4,34 @@ import React from "react";
 import Link from "next/link";
 
 interface AuthLinkProps {
-  text: string;
+  regularText: string;
+  linkText: string;
   href: string;
 }
 
-export const AuthLink: React.FC<AuthLinkProps> = ({ text, href }) => {
+export const AuthLink: React.FC<AuthLinkProps> = ({ regularText, linkText, href }) => {
   return (
-    <div className="flex justify-center mt-3">
-      <Link href={href} className="auth-link text-[14px] font-mina text-center">
-        {text}
+    <div className="mt-4">
+      <span
+        className="text-[16px] text-black inline"
+        style={{
+          fontFamily: 'var(--font-open-sans)',
+          verticalAlign: 'baseline',
+          lineHeight: '1.4'
+        }}
+      >
+        {regularText}{" "}
+      </span>
+      <Link
+        href={href}
+        className="auth-link text-[16px] inline"
+        style={{
+          fontFamily: 'var(--font-open-sans)',
+          verticalAlign: 'baseline',
+          lineHeight: '1.4'
+        }}
+      >
+        {linkText}
       </Link>
     </div>
   );

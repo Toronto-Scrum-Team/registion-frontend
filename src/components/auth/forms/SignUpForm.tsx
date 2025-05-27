@@ -7,7 +7,8 @@ import { AuthInput } from "../elements/AuthInput";
 import { AuthButton } from "../elements/AuthButton";
 import { AuthLink } from "../elements/AuthLink";
 import { AuthErrorMessage } from "../elements/AuthErrorMessage";
-import { AuthFormContainer } from "../elements/AuthFormContainer";
+import { PasswordInput } from "../elements/PasswordInput";
+// import { AuthFormContainer } from "../elements/AuthFormContainer"; // Removed due to layout redesign - replaced with split-screen layout
 import { validateEmail, validatePassword, validateName, validatePasswordConfirmation } from "@/lib/utils/validation";
 
 export const SignUpForm: React.FC = () => {
@@ -116,106 +117,119 @@ export const SignUpForm: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full max-w-[1005px] h-[641px]">
-      {/* Background Image */}
-      <div className="absolute left-0 top-0 w-[673px] h-[471px] rounded-[100px] shadow-[8px_10px_10px_3px_rgba(0,0,0,0.25)] overflow-hidden">
-        <div className="w-full h-full bg-[url('/nightclub-bg.png')] bg-cover bg-center bg-no-repeat"></div>
+    <div className="flex w-full max-w-6xl mx-auto bg-white rounded-lg overflow-hidden min-h-[700px]">
+      {/* Left side - Gray placeholder for illustration */}
+      <div className="flex-1 placeholder-area flex items-center justify-center">
+        <div className="text-gray-500 text-center">
+          <div className="text-4xl mb-2">🎨</div>
+          <p className="text-sm">Illustration placeholder</p>
+        </div>
       </div>
 
-      {/* Form Container */}
-      <AuthFormContainer
-        title={
-          <>
-            <h1 className="auth-title text-[42px]">Sign Up to</h1>
-            <h2 className="auth-title text-[42px] underline">The Night Club</h2>
-          </>
-        }
-      >
-        <form onSubmit={handleSubmit} className="w-full space-y-4">
-          {/* Name Fields - Side by Side */}
-          <div className="flex space-x-4">
-            {/* First Name Input */}
-            <div className="flex-1">
-              <AuthInput
-                label="First Name"
-                type="text"
-                name="firstName"
-                placeholder="John"
-                value={formData.firstName}
-                onChange={handleChange}
-                error={formErrors.firstName}
-              />
-            </div>
+      {/* Right side - Form */}
+      <div className="flex-1 p-12 flex flex-col justify-center">
+        <div className="max-w-md mx-auto w-full">
+          {/* Title */}
+          <h1 className="auth-title text-[32px] mb-2">Create your account</h1>
 
-            {/* Last Name Input */}
-            <div className="flex-1">
-              <AuthInput
-                label="Last Name"
-                type="text"
-                name="lastName"
-                placeholder="Doe"
-                value={formData.lastName}
-                onChange={handleChange}
-                error={formErrors.lastName}
-              />
-            </div>
-          </div>
-
-          {/* Email Input */}
-          <AuthInput
-            label="E-mail"
-            type="email"
-            name="email"
-            placeholder="example@service.com"
-            value={formData.email}
-            onChange={handleChange}
-            error={formErrors.email}
-          />
-
-          {/* Password Input */}
-          <div className="space-y-1">
-            <AuthInput
-              label="Password"
-              type="password"
-              name="password"
-              placeholder="****************"
-              value={formData.password}
-              onChange={handleChange}
-              error={formErrors.password}
-            />
-            <p className="text-gray-300 text-xs mt-1">
-              Password must be at least 8 characters with one uppercase letter, one number, and one special character.
-            </p>
-          </div>
-
-          {/* Confirm Password Input */}
-          <AuthInput
-            label="Confirm Password"
-            type="password"
-            name="confirmPassword"
-            placeholder="****************"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            error={formErrors.confirmPassword}
-          />
-
-          {/* Error Message */}
-          <AuthErrorMessage message={error} />
-
-          {/* Sign Up Button */}
-          <AuthButton
-            label="SIGN UP"
-            isLoading={isLoading}
-            disabled={isLoading}
-          />
-
-          {/* Login Link */}
+          {/* Login link */}
           <AuthLink
-            text="Already have an account?"
+            regularText="Have an account?"
+            linkText="Log in now"
             href="/login"
           />
-        </form>
-      </AuthFormContainer>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            {/* Email Input */}
+            <AuthInput
+              label="Email Address"
+              type="email"
+              name="email"
+              placeholder=""
+              value={formData.email}
+              onChange={handleChange}
+              error={formErrors.email}
+            />
+
+            {/* First Name Input */}
+            <AuthInput
+              label="First name"
+              type="text"
+              name="firstName"
+              placeholder=""
+              value={formData.firstName}
+              onChange={handleChange}
+              error={formErrors.firstName}
+            />
+
+            {/* Last Name Input */}
+            <AuthInput
+              label="Last name"
+              type="text"
+              name="lastName"
+              placeholder=""
+              value={formData.lastName}
+              onChange={handleChange}
+              error={formErrors.lastName}
+            />
+
+            {/* Password Input */}
+            <div className="space-y-2 w-full">
+              <PasswordInput
+                label="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                error={formErrors.password}
+                placeholder=""
+              />
+
+              {/* Password Requirements */}
+              <div className="password-requirements text-xs text-gray-600 mt-2 space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className={`text-xs ${formData.password.length >= 8 ? 'text-green-600' : 'text-gray-400'}`}>✓</span>
+                  <span>Must be at least 8 characters</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={`text-xs ${/[A-Z]/.test(formData.password) && /[0-9]/.test(formData.password) && /[!@#$%^&*(),.?":{}|<>]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>✓</span>
+                  <span>Contain at least one uppercase, one number and one special character</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Confirm Password Input */}
+            <PasswordInput
+              label="Confirm password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={formErrors.confirmPassword}
+              placeholder=""
+            />
+
+            {/* Error Message */}
+            <AuthErrorMessage message={error} />
+
+            {/* Buttons */}
+            <div className="flex space-x-4 pt-4">
+              <AuthButton
+                label="Cancel"
+                type="button"
+                variant="secondary"
+                className="flex-1"
+              />
+              <AuthButton
+                label="Submit"
+                type="submit"
+                variant="primary"
+                isLoading={isLoading}
+                disabled={isLoading}
+                className="flex-1"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
