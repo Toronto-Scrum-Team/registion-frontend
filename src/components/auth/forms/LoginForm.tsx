@@ -61,6 +61,25 @@ export const LoginForm: React.FC = () => {
     return isValid;
   };
 
+  const handleCancel = () => {
+    // Clear all form fields
+    setFormData({
+      email: "",
+      password: "",
+    });
+
+    // Clear form errors
+    setFormErrors({
+      email: "",
+      password: "",
+    });
+
+    // Clear global error
+    if (error) {
+      clearError();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -130,6 +149,7 @@ export const LoginForm: React.FC = () => {
                 label="Cancel"
                 type="button"
                 variant="secondary"
+                onClick={handleCancel}
                 className="flex-1"
               />
               <AuthButton

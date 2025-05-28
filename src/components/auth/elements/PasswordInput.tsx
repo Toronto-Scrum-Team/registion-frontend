@@ -23,8 +23,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       <div className="space-y-2 w-full">
         <label
           htmlFor={inputId}
-          className="block text-black text-[16px] font-[700]"
-          style={{ fontFamily: 'var(--font-open-sans)' }}
+          className="block text-black text-[16px] font-[600]"
+          style={{ fontFamily: 'var(--font-geist-sans)' }}
         >
           {label}
         </label>

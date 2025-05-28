@@ -15,7 +15,7 @@ export const AuthLink: React.FC<AuthLinkProps> = ({ regularText, linkText, href 
       <span
         className="text-[16px] text-black inline"
         style={{
-          fontFamily: 'var(--font-open-sans)',
+          fontFamily: 'var(--font-geist-sans)',
           verticalAlign: 'baseline',
           lineHeight: '1.4'
         }}
@@ -26,7 +26,7 @@ export const AuthLink: React.FC<AuthLinkProps> = ({ regularText, linkText, href 
         href={href}
         className="auth-link text-[16px] inline"
         style={{
-          fontFamily: 'var(--font-open-sans)',
+          fontFamily: 'var(--font-geist-sans)',
           verticalAlign: 'baseline',
           lineHeight: '1.4'
         }}

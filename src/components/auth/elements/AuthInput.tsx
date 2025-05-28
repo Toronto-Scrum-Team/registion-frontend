@@ -25,7 +25,7 @@ export const AuthInput: React.FC<AuthInputProps> = ({
 }) => {
   return (
     <div className="space-y-2 w-full">
-      <label className="block text-black text-[16px] font-[700]" style={{ fontFamily: 'var(--font-open-sans)' }}>
+      <label className="block text-black text-[16px] font-[600]" style={{ fontFamily: 'var(--font-geist-sans)' }}>
         {label}
       </label>
       <input

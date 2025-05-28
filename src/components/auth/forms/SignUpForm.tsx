@@ -98,6 +98,31 @@ export const SignUpForm: React.FC = () => {
     return isValid;
   };
 
+  const handleCancel = () => {
+    // Clear all form fields
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+
+    // Clear form errors
+    setFormErrors({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+
+    // Clear global error
+    if (error) {
+      clearError();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -216,6 +241,7 @@ export const SignUpForm: React.FC = () => {
                 label="Cancel"
                 type="button"
                 variant="secondary"
+                onClick={handleCancel}
                 className="flex-1"
               />
               <AuthButton

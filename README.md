@@ -381,9 +381,6 @@ After successfully setting up the project:
 
 ```
 ├── public/                     # Static assets
-│   ├── fonts/                  # Custom fonts (IBM Plex Serif, Open Sans)
-│   │   ├── IBM_Plex_Serif/     # IBM Plex Serif font files
-│   │   └── Open_Sans/          # Open Sans font files
 │   ├── nightclub-bg.png        # Background image
 │   └── *.svg                   # SVG icons and graphics
 ├── src/

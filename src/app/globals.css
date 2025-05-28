@@ -21,15 +21,13 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-mina: var(--font-mina);
-  --font-ibm-plex-serif: var(--font-ibm-plex-serif);
-  --font-open-sans: var(--font-open-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-open-sans), Arial, sans-serif;
-  font-weight: 700; /* Open Sans Bold for general text */
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-weight: 400; /* Geist Sans Regular for general text */
 }
 
 .auth-form-container {
@@ -48,8 +46,8 @@ body {
   width: 100%;
   height: 48px;
   font-size: 16px;
-  font-family: var(--font-open-sans);
-  font-weight: 700; /* Open Sans Bold */
+  font-family: var(--font-geist-sans);
+  font-weight: 500; /* Geist Sans Medium */
   box-sizing: border-box;
   transition: border-color 0.2s ease;
 }
@@ -68,8 +66,8 @@ body {
   background: var(--button-primary-bg);
   border-radius: 8px;
   color: var(--button-primary-text);
-  font-family: var(--font-open-sans);
-  font-weight: 700; /* Open Sans Bold */
+  font-family: var(--font-geist-sans);
+  font-weight: 600; /* Geist Sans SemiBold */
   padding: 0.75rem 1.5rem;
   transition: all 0.2s ease;
   text-align: center;
@@ -87,8 +85,8 @@ body {
   background: var(--button-secondary-bg);
   border-radius: 8px;
   color: var(--button-secondary-text);
-  font-family: var(--font-open-sans);
-  font-weight: 700; /* Open Sans Bold */
+  font-family: var(--font-geist-sans);
+  font-weight: 600; /* Geist Sans SemiBold */
   padding: 0.75rem 1.5rem;
   transition: all 0.2s ease;
   text-align: center;
@@ -106,8 +104,8 @@ body {
   color: var(--link-color);
   text-decoration: none;
   display: inline;
-  font-family: var(--font-open-sans);
-  font-weight: 700; /* Open Sans Bold */
+  font-family: var(--font-geist-sans);
+  font-weight: 600; /* Geist Sans SemiBold */
   vertical-align: baseline;
 }
 
@@ -116,16 +114,16 @@ body {
 }
 
 .auth-title {
-  font-family: var(--font-ibm-plex-serif);
-  font-weight: 400; /* IBM Plex Serif Regular */
+  font-family: var(--font-geist-sans);
+  font-weight: 600; /* Geist Sans SemiBold for titles */
   text-align: left;
   color: var(--foreground);
   text-shadow: none;
 }
 
 .password-requirements {
-  font-family: var(--font-open-sans);
-  font-weight: 600; /* Open Sans Semi Bold */
+  font-family: var(--font-geist-sans);
+  font-weight: 500; /* Geist Sans Medium */
 }
 
 .placeholder-area {

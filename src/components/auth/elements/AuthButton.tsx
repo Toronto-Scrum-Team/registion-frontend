@@ -29,7 +29,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
       onClick={onClick}
       disabled={disabled || isLoading}
       className={`${baseClasses} text-[16px] ${className}`}
-      style={{ fontFamily: 'var(--font-open-sans)' }}
+      style={{ fontFamily: 'var(--font-geist-sans)' }}
     >
       {isLoading ? "Loading..." : label}
     </button>
