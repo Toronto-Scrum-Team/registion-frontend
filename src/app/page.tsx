@@ -5,17 +5,19 @@ import { useAuth } from "@/lib/auth/useAuth";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // 检查登录状态，根据状态重定向到相应页面
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    } else {
-      router.push("/login");
+    // Only redirect after authentication check is complete
+    if (!isLoading) {
+      if (isAuthenticated) {
+        router.push("/dashboard");
+      } else {
+        router.push("/login");
+      }
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isLoading, router]);
 
   // 显示加载状态，等待重定向
   return (

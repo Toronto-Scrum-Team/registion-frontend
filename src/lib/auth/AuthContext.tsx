@@ -1,175 +1,236 @@
 "use client";
 
-import React, { createContext, useReducer, useEffect } from "react";
-import { AuthState, AuthContextType, LoginCredentials, RegisterCredentials, User } from "@/types/auth";
-import { authService } from "@/lib/api/auth";
+import React, { createContext, useReducer, useEffect, ReactNode } from 'react';
+import { AuthContextType, AuthState, LoginCredentials, RegisterCredentials, Session } from '@/types/auth';
+import { authService, tokenService } from '@/lib/api/auth';
 
 // Initial state
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true,
   error: null,
+  token: null,
+  sessions: [],
 };
-
-// Create context
-export const AuthContext = createContext<AuthContextType>({
-  ...initialState,
-  login: async () => {},
-  register: async () => {},
-  logout: async () => {},
-  clearError: () => {},
-});
 
 // Action types
 type AuthAction =
-  | { type: "LOGIN_REQUEST" }
-  | { type: "LOGIN_SUCCESS"; payload: User }
-  | { type: "LOGIN_FAILURE"; payload: string }
-  | { type: "REGISTER_REQUEST" }
-  | { type: "REGISTER_SUCCESS"; payload: User }
-  | { type: "REGISTER_FAILURE"; payload: string }
-  | { type: "LOGOUT" }
-  | { type: "CLEAR_ERROR" };
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_USER'; payload: { user: any; token: string } }
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'CLEAR_ERROR' }
+  | { type: 'LOGOUT' }
+  | { type: 'SET_SESSIONS'; payload: Session[] };
 
 // Reducer
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
-    case "LOGIN_REQUEST":
-    case "REGISTER_REQUEST":
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+    case 'SET_USER':
       return {
         ...state,
-        isLoading: true,
-        error: null,
-      };
-    case "LOGIN_SUCCESS":
-    case "REGISTER_SUCCESS":
-      return {
-        ...state,
-        isLoading: false,
+        user: action.payload.user,
+        token: action.payload.token,
         isAuthenticated: true,
-        user: action.payload,
+        isLoading: false,
         error: null,
       };
-    case "LOGIN_FAILURE":
-    case "REGISTER_FAILURE":
-      return {
-        ...state,
-        isLoading: false,
-        isAuthenticated: false,
-        user: null,
-        error: action.payload,
-      };
-    case "LOGOUT":
+    case 'SET_ERROR':
+      return { ...state, error: action.payload, isLoading: false };
+    case 'CLEAR_ERROR':
+      return { ...state, error: null };
+    case 'LOGOUT':
       return {
         ...initialState,
+        isLoading: false,
       };
-    case "CLEAR_ERROR":
-      return {
-        ...state,
-        error: null,
-      };
+    case 'SET_SESSIONS':
+      return { ...state, sessions: action.payload };
     default:
       return state;
   }
 };
 
-// We now use the authService from @/lib/api/auth instead of defining API functions here
+// Create context
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Provider component
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// AuthProvider component
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Check for current user on mount
+  // Initialize auth state on mount
   useEffect(() => {
-    const checkCurrentUser = async () => {
+    const initializeAuth = async () => {
       try {
-        const user = await authService.getCurrentUser();
-        if (user) {
-          dispatch({ type: "LOGIN_SUCCESS", payload: user });
+        const token = tokenService.getToken();
+        if (token) {
+          const user = await authService.getCurrentUser(token);
+          if (user) {
+            dispatch({ type: 'SET_USER', payload: { user, token } });
+            // Load sessions
+            try {
+              const sessionsResponse = await authService.getSessions(token);
+              dispatch({ type: 'SET_SESSIONS', payload: sessionsResponse.sessions });
+            } catch (error) {
+              console.error('Failed to load sessions:', error);
+            }
+          } else {
+            // Token is invalid, remove it
+            tokenService.removeToken();
+            dispatch({ type: 'SET_LOADING', payload: false });
+          }
+        } else {
+          dispatch({ type: 'SET_LOADING', payload: false });
         }
       } catch (error) {
-        console.error("Failed to get current user:", error);
+        console.error('Auth initialization failed:', error);
+        tokenService.removeToken();
+        dispatch({ type: 'SET_LOADING', payload: false });
       }
     };
 
-    checkCurrentUser();
+    initializeAuth();
   }, []);
 
   // Login function
-  const login = async (credentials: LoginCredentials) => {
-    dispatch({ type: "LOGIN_REQUEST" });
+  const login = async (credentials: LoginCredentials): Promise<void> => {
     try {
-      // Call the API service
-      const user = await authService.login(credentials);
+      dispatch({ type: 'SET_LOADING', payload: true });
+      dispatch({ type: 'CLEAR_ERROR' });
 
-      // Store user in local storage (handled by authService.getCurrentUser)
-      localStorage.setItem("user", JSON.stringify(user));
+      const authResponse = await authService.login(credentials);
+      const token = authResponse.access_token;
 
-      // Update state
-      dispatch({ type: "LOGIN_SUCCESS", payload: user });
+      // Store token
+      tokenService.setToken(token);
+
+      // Get user info
+      const user = await authService.getCurrentUser(token);
+      if (user) {
+        dispatch({ type: 'SET_USER', payload: { user, token } });
+
+        // Load sessions
+        try {
+          const sessionsResponse = await authService.getSessions(token);
+          dispatch({ type: 'SET_SESSIONS', payload: sessionsResponse.sessions });
+        } catch (error) {
+          console.error('Failed to load sessions after login:', error);
+        }
+      } else {
+        throw new Error('Failed to get user information');
+      }
     } catch (error) {
-      dispatch({
-        type: "LOGIN_FAILURE",
-        payload: error instanceof Error ? error.message : "Login failed"
-      });
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      dispatch({ type: 'SET_ERROR', payload: errorMessage });
+      tokenService.removeToken();
+      throw error;
     }
   };
 
   // Register function
-  const register = async (credentials: RegisterCredentials) => {
-    dispatch({ type: "REGISTER_REQUEST" });
+  const register = async (credentials: RegisterCredentials): Promise<void> => {
     try {
-      // Call the API service
-      const user = await authService.register(credentials);
+      dispatch({ type: 'SET_LOADING', payload: true });
+      dispatch({ type: 'CLEAR_ERROR' });
 
-      // Store user in local storage (handled by authService.getCurrentUser)
-      localStorage.setItem("user", JSON.stringify(user));
+      await authService.register(credentials);
 
-      // Update state
-      dispatch({ type: "REGISTER_SUCCESS", payload: user });
-    } catch (error) {
-      dispatch({
-        type: "REGISTER_FAILURE",
-        payload: error instanceof Error ? error.message : "Registration failed"
+      // After successful registration, automatically log in
+      await login({
+        email: credentials.email,
+        password: credentials.password,
       });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      dispatch({ type: 'SET_ERROR', payload: errorMessage });
+      throw error;
     }
   };
 
   // Logout function
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
-      // Call the API service
-      await authService.logout();
-
-      // Remove user from local storage
-      localStorage.removeItem("user");
-
-      // Update state
-      dispatch({ type: "LOGOUT" });
-    } catch (error) {
-      console.error("Logout failed:", error);
-      // Still remove user from local storage and update state even if API call fails
-      localStorage.removeItem("user");
-      dispatch({ type: "LOGOUT" });
+      const token = tokenService.getToken();
+      if (token) {
+        try {
+          await authService.logout(token);
+        } catch (error) {
+          console.error('Logout API call failed:', error);
+          // Continue with local logout even if API call fails
+        }
+      }
+    } finally {
+      tokenService.removeToken();
+      dispatch({ type: 'LOGOUT' });
     }
   };
 
-  // Clear error
-  const clearError = () => {
-    dispatch({ type: "CLEAR_ERROR" });
+  // Clear error function
+  const clearError = (): void => {
+    dispatch({ type: 'CLEAR_ERROR' });
+  };
+
+  // Refresh sessions function
+  const refreshSessions = async (): Promise<void> => {
+    try {
+      const token = tokenService.getToken();
+      if (token) {
+        const sessionsResponse = await authService.getSessions(token);
+        dispatch({ type: 'SET_SESSIONS', payload: sessionsResponse.sessions });
+      }
+    } catch (error) {
+      console.error('Failed to refresh sessions:', error);
+      throw error;
+    }
+  };
+
+  // Terminate session function
+  const terminateSession = async (sessionId: string): Promise<void> => {
+    try {
+      const token = tokenService.getToken();
+      if (token) {
+        await authService.terminateSession(token, sessionId);
+        await refreshSessions();
+      }
+    } catch (error) {
+      console.error('Failed to terminate session:', error);
+      throw error;
+    }
+  };
+
+  // Terminate all sessions function
+  const terminateAllSessions = async (): Promise<void> => {
+    try {
+      const token = tokenService.getToken();
+      if (token) {
+        await authService.terminateAllSessions(token);
+        await refreshSessions();
+      }
+    } catch (error) {
+      console.error('Failed to terminate all sessions:', error);
+      throw error;
+    }
+  };
+
+  const contextValue: AuthContextType = {
+    ...state,
+    login,
+    register,
+    logout,
+    clearError,
+    refreshSessions,
+    terminateSession,
+    terminateAllSessions,
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        ...state,
-        login,
-        register,
-        logout,
-        clearError,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
