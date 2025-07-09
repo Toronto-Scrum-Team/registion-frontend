@@ -5,15 +5,25 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/useAuth";
 import { Navbar } from '@/components/dashboard';
 
+
 export default function DashboardPage() {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
 
+  //check if log out
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/login");
     }
   }, [isAuthenticated, router]);
+
+  //navbar routers
+  //   if (isAuthenticated) {
+  //     router.push("/dashboard");
+  //   } else {
+  //     router.push("/login");
+  //   }
+  // }, [isAuthenticated, router]);
 
   if (!isAuthenticated || !user) {
     return (
@@ -27,19 +37,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div>
+    <div className="bg-blue-500">
       <Navbar />
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5]">
-        <div className="bg-[#071922] p-8 rounded-[30px] shadow max-w-md w-full">
-          <h1 className="text-2xl font-bold text-white font-mina text-center mb-6">Dashboard</h1>
-          <p className="text-white text-center mb-4">
-            Authentication successful! Welcome, {user.name}.
-          </p>
-          <p className="text-white/70 text-center text-sm">
-            This is a placeholder dashboard page. The actual dashboard content will be implemented in future commits.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
